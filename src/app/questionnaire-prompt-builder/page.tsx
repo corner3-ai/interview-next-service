@@ -2,7 +2,7 @@ import React from "react"
 
 export default function QuestionnairePromptBuilder() {
   return (
-    <div className="flex justify-start items-center h-screen bg-white">
+    <div className="flex justify-start items-center h-screen p-10 bg-gradient-to-b from-white to-blue-50">
       <div className="flex flex-col align-center p-5 justify-start">
         <h1 className="text-indigo-400 text-2xl font-bold mb-1">
           Let&apos;s build a prompt
