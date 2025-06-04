@@ -88,12 +88,25 @@ function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
       ) : (
         <div className="flex flex-col items-center w-full py-4">
           <div className="w-full overflow-hidden">
-            <TranscriptionView />
+            <div className="flex flex-row items-start w-full">
+              <div className="flex-1">
+                <TranscriptionView />
+              </div>
+              {agentState !== "connecting" && agentState !== "initializing" && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src="/clippy-microsoft.gif"
+                  alt="Clippy"
+                  className="ml-4 w-32 h-32 object-contain"
+                  style={{ imageRendering: "auto" }}
+                />
+              )}
+            </div>
           </div>
-          <div className="w-full flex flex-row justify-between items-center">
+          <div className="w-full flex flex-row items-center justify-end">
             <ControlBar />
-            <RoomAudioRenderer />
           </div>
+          <RoomAudioRenderer />
           <NoAgentNotification state={agentState} />
         </div>
       )}
