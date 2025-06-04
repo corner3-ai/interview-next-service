@@ -50,7 +50,7 @@ export function NoAgentNotification(props: NoAgentNotificationProps) {
   return (
     <>
       {showNotification ? (
-        <div className="fixed text-sm left-1/2 max-w-[90vw] -translate-x-1/2 flex top-6 items-center gap-4 bg-[#1F1F1F] px-4 py-3 rounded-lg">
+        <div className="text-sm  max-w-[90vw]  flex items-center gap-4 bg-yellow-200 px-4 py-3 rounded-lg">
           <div>
             {/* Warning Icon */}
             <svg
