@@ -14,10 +14,10 @@ export default function TranscriptionView() {
   }, [combinedTranscriptions])
 
   return (
-    <div className="relative h-[200px] w-[512px] max-w-[90vw] mx-auto">
+    <div className="relative h-[400px] w-full max-w-[90vw] mx-auto">
       <div
         ref={containerRef}
-        className="h-full flex flex-col gap-2 overflow-y-auto px-4 py-8 border-gray-200 border-2 rounded-lg"
+        className="h-full flex flex-col gap-2 px-4 py-8 border-gray-200 border-2 rounded-lg"
       >
         {combinedTranscriptions.map((segment) => (
           <div

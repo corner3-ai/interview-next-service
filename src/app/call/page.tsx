@@ -40,10 +40,10 @@ export default function Call() {
   }, [room])
 
   return (
-    <div className="flex justify-center items-center h-screen px-10 bg-gradient-to-b from-white to-blue-50">
-      <div className="flex flex-col align-center p-5 justify-start w-4/6 mt-5">
+    <div className="flex justify-center items-center h-screen ">
+      <div className="flex flex-col align-center p-5 justify-start w-4/6 ">
         <RoomContext.Provider value={room}>
-          <div className="h-full w-full max-w-[1024px] mx-auto">
+          <div className="flex h-full w-full max-w-[1024px] mx-auto">
             <SimpleVoiceAssistant
               onConnectButtonClicked={onConnectButtonClicked}
             />
@@ -58,19 +58,19 @@ function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
   const { state: agentState } = useVoiceAssistant()
 
   return (
-    <div className="flex flex-col justify-center items-center  w-full px-10 bg-gradient-to-b from-slate-50 to-slate-100">
+    <div className="flex flex-col justify-center items-center w-full px-10 ">
       {agentState === "disconnected" ? (
-        <div className="grid items-center justify-center w-full">
+        <div className="flex items-center justify-center w-full">
           <button
-            className="uppercase px-4 py-2 bg-white text-black rounded-md"
+            className="w-full py-2 bg-blue-500 text-white rounded-4xl text-lg font-light hover:bg-blue-600 transition-colors  "
             onClick={() => props.onConnectButtonClicked()}
           >
             Start Call
           </button>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-4 w-full py-4">
-          <div className="flex-1 w-full overflow-hidden">
+        <div className="flex flex-col items-center w-full py-4">
+          <div className="w-full overflow-hidden">
             <TranscriptionView />
           </div>
           <div className="w-full">
@@ -88,17 +88,17 @@ function ControlBar(props: { onConnectButtonClicked: () => void }) {
   const { state: agentState } = useVoiceAssistant()
 
   return (
-    <div className="relative h-[60px]">
+    <div className="flex justify-center items-center relative h-[60px]">
       {agentState === "disconnected" && (
         <button
-          className="uppercase absolute left-1/2 -translate-x-1/2 px-4 py-2 bg-white text-black rounded-md"
+          className="uppercase px-4 py-2 text-black rounded-md"
           onClick={() => props.onConnectButtonClicked()}
         >
-          Start a conversation
+          Start Call
         </button>
       )}
       {agentState !== "disconnected" && agentState !== "connecting" && (
-        <div className="flex h-8 absolute left-1/2 -translate-x-1/2 justify-center">
+        <div className="flex w-full h-8 justify-center p-2 border-2 border-gray-200 rounded-lg">
           <VoiceAssistantControlBar controls={{ leave: false }} />
           <DisconnectButton>
             <CloseIcon />
