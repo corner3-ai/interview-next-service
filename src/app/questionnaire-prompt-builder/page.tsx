@@ -50,7 +50,6 @@ export default function QuestionnairePromptBuilder() {
         const errorData = await response.json()
         throw new Error(errorData.error || "Failed to save prompt")
       }
-      // TODO: Add call page
       router.push("/call")
     } catch (error) {
       console.error("Error saving prompt:", error)

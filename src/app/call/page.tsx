@@ -11,9 +11,11 @@ import type { ConnectionParams } from "../api/auth/route"
 import { CloseIcon } from "@/components/close-icon"
 import { NoAgentNotification } from "@/components/no-agent-notification"
 import TranscriptionView from "@/components/transcription-view"
+import { useRouter } from "next/navigation"
 
 export default function Call() {
   const [room] = useState(new Room())
+  const router = useRouter()
 
   const onConnectButtonClicked = useCallback(async () => {
     if (room.state === ConnectionState.Connected) {
@@ -37,6 +39,7 @@ export default function Call() {
     room.on(RoomEvent.MediaDevicesError, onDeviceFailure)
     room.on(RoomEvent.Disconnected, () => {
       room.state = ConnectionState.Disconnected
+      router.push("/")
     })
 
     return () => {
@@ -46,7 +49,7 @@ export default function Call() {
         room.disconnect().catch(console.error)
       }
     }
-  }, [room])
+  }, [room, router])
 
   return (
     <div className="flex justify-center items-center h-screen ">
@@ -76,10 +79,10 @@ function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
       {agentState === "disconnected" ? (
         <div className="flex items-center justify-center w-full">
           <button
-            className="w-full py-2 bg-blue-500 text-white rounded-4xl text-lg font-light hover:bg-blue-600 transition-colors"
+            className="w-full max-w-80 py-2 bg-blue-500 text-white rounded-4xl text-lg font-light hover:bg-blue-600 transition-colors"
             onClick={handleStartCall}
           >
-            Start Call
+            Join Call
           </button>
         </div>
       ) : (
