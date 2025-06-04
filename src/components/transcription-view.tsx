@@ -14,10 +14,11 @@ export default function TranscriptionView() {
   }, [combinedTranscriptions])
 
   return (
-    <div className="relative h-[400px] w-full max-w-[90vw] mx-auto">
+    <div className="relative h-[400px] w-full max-w-[90vw] mx-auto overflow-y-hidden">
       <div
         ref={containerRef}
-        className="h-full flex flex-col gap-2 px-4 py-8 border-gray-200 border-2 rounded-lg"
+        className="
+        flex flex-col h-full w-full p-6 border-2 border-indigo-400 rounded-2xl focus:outline-none focus:border-indigo-500 text-gray-700 placeholder-gray-400 bg-white shadow-sm transition-colors overflow-y-auto"
       >
         {combinedTranscriptions.map((segment) => (
           <div
@@ -25,8 +26,8 @@ export default function TranscriptionView() {
             key={segment.id}
             className={
               segment.role === "assistant"
-                ? "bg-blue-100 border border-blue-200 rounded-lg p-3 self-start max-w-[80%] text-gray-800"
-                : "bg-gray-700 border border-gray-600 rounded-lg p-3 self-end max-w-[80%] text-white"
+                ? "bg-blue-100 border border-blue-200 rounded-lg p-3 self-start max-w-[80%] text-gray-800 my-2"
+                : "bg-gray-700 border border-gray-600 rounded-lg p-3 self-end max-w-[80%] text-white my-2"
             }
           >
             {segment.text}

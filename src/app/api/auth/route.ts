@@ -21,7 +21,8 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const roomName = searchParams.get("roomName") || "interview-room"
+    const roomName =
+      searchParams.get("roomName") || `room-${Math.random() * 10_000}`
     const participantName =
       searchParams.get("participantName") || `user-${Math.random() * 10_000}`
 
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
       canPublish: true,
       canPublishData: true,
       canSubscribe: true,
+      canUpdateOwnMetadata: true,
     }
 
     at.addGrant(videoGrant)

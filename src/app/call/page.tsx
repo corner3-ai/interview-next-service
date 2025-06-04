@@ -1,23 +1,32 @@
 "use client"
 
+import {
+  RoomAudioRenderer,
+  RoomContext,
+  useVoiceAssistant,
+} from "@livekit/components-react"
+import { Room, RoomEvent, ConnectionState } from "livekit-client"
+import { useCallback, useEffect, useState, useContext } from "react"
+import type { ConnectionParams } from "../api/auth/route"
 import { CloseIcon } from "@/components/close-icon"
 import { NoAgentNotification } from "@/components/no-agent-notification"
 import TranscriptionView from "@/components/transcription-view"
-import {
-  DisconnectButton,
-  RoomAudioRenderer,
-  RoomContext,
-  VoiceAssistantControlBar,
-  useVoiceAssistant,
-} from "@livekit/components-react"
-import { Room, RoomEvent } from "livekit-client"
-import { useCallback, useEffect, useState } from "react"
-import type { ConnectionParams } from "../api/auth/route"
 
 export default function Call() {
   const [room] = useState(new Room())
 
   const onConnectButtonClicked = useCallback(async () => {
+    if (room.state === ConnectionState.Connected) {
+      await room.disconnect()
+    }
+
+    const promptResponse = await fetch("/api/questionnaire-prompt-builder")
+    if (!promptResponse.ok) {
+      const errorData = await promptResponse.json()
+      throw new Error(errorData.error || "Failed to fetch prompt")
+    }
+    const { prompt } = await promptResponse.json()
+
     const response = await fetch("/api/auth")
     if (!response.ok) {
       const errorData = await response.json()
@@ -29,13 +38,30 @@ export default function Call() {
       connectionDetailsData.participantToken
     )
     await room.localParticipant.setMicrophoneEnabled(true)
+
+    await room.localParticipant.publishData(
+      new TextEncoder().encode(
+        JSON.stringify({
+          type: "interview_prompt",
+          prompt,
+          skipGreeting: true,
+        })
+      )
+    )
   }, [room])
 
   useEffect(() => {
     room.on(RoomEvent.MediaDevicesError, onDeviceFailure)
+    room.on(RoomEvent.Disconnected, () => {
+      room.state = ConnectionState.Disconnected
+    })
 
     return () => {
       room.off(RoomEvent.MediaDevicesError, onDeviceFailure)
+      room.off(RoomEvent.Disconnected, () => {})
+      if (room.state === ConnectionState.Connected) {
+        room.disconnect().catch(console.error)
+      }
     }
   }, [room])
 
@@ -56,14 +82,19 @@ export default function Call() {
 
 function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
   const { state: agentState } = useVoiceAssistant()
+  const { onConnectButtonClicked } = props
+
+  const handleStartCall = useCallback(async () => {
+    await onConnectButtonClicked()
+  }, [onConnectButtonClicked])
 
   return (
-    <div className="flex flex-col justify-center items-center w-full px-10 ">
+    <div className="flex flex-col justify-center items-center w-full">
       {agentState === "disconnected" ? (
         <div className="flex items-center justify-center w-full">
           <button
-            className="w-full py-2 bg-blue-500 text-white rounded-4xl text-lg font-light hover:bg-blue-600 transition-colors  "
-            onClick={() => props.onConnectButtonClicked()}
+            className="w-full py-2 bg-blue-500 text-white rounded-4xl text-lg font-light hover:bg-blue-600 transition-colors"
+            onClick={handleStartCall}
           >
             Start Call
           </button>
@@ -74,7 +105,7 @@ function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
             <TranscriptionView />
           </div>
           <div className="w-full">
-            <ControlBar onConnectButtonClicked={props.onConnectButtonClicked} />
+            <ControlBar />
           </div>
           <RoomAudioRenderer />
           <NoAgentNotification state={agentState} />
@@ -84,25 +115,30 @@ function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
   )
 }
 
-function ControlBar(props: { onConnectButtonClicked: () => void }) {
+function ControlBar() {
   const { state: agentState } = useVoiceAssistant()
+  const room = useContext(RoomContext)
+
+  const handleDisconnect = useCallback(async () => {
+    if (!room) return
+    try {
+      await room.disconnect()
+    } catch (error) {
+      console.error("Error disconnecting:", error)
+    }
+  }, [room])
 
   return (
-    <div className="flex justify-center items-center relative h-[60px]">
-      {agentState === "disconnected" && (
-        <button
-          className="uppercase px-4 py-2 text-black rounded-md"
-          onClick={() => props.onConnectButtonClicked()}
-        >
-          Start Call
-        </button>
-      )}
+    <div className="flex justify-end items-center relative h-[60px]">
       {agentState !== "disconnected" && agentState !== "connecting" && (
-        <div className="flex w-full h-8 justify-center p-2 border-2 border-gray-200 rounded-lg">
-          <VoiceAssistantControlBar controls={{ leave: false }} />
-          <DisconnectButton>
+        <div className="flex flex-row w-full h-8 justify-end">
+          <button
+            onClick={handleDisconnect}
+            className=" border-2 border-gray-400 p-2 hover:bg-gray-100 rounded-md transition-colors flex flex-row items-center gap-2"
+          >
             <CloseIcon />
-          </DisconnectButton>
+            Disconnect
+          </button>
         </div>
       )}
     </div>
