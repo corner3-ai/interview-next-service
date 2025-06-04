@@ -1,17 +1,17 @@
 "use client"
 
+import { CloseIcon } from "@/components/close-icon"
+import { NoAgentNotification } from "@/components/no-agent-notification"
+import TranscriptionView from "@/components/transcription-view"
 import {
   RoomAudioRenderer,
   RoomContext,
   useVoiceAssistant,
 } from "@livekit/components-react"
-import { Room, RoomEvent, ConnectionState } from "livekit-client"
-import { useCallback, useEffect, useState, useContext } from "react"
-import type { ConnectionParams } from "../api/auth/route"
-import { CloseIcon } from "@/components/close-icon"
-import { NoAgentNotification } from "@/components/no-agent-notification"
-import TranscriptionView from "@/components/transcription-view"
+import { ConnectionState, Room, RoomEvent } from "livekit-client"
 import { useRouter } from "next/navigation"
+import { useCallback, useContext, useEffect, useState } from "react"
+import type { ConnectionParams } from "../api/auth/route"
 
 export default function Call() {
   const [room] = useState(new Room())

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server"
 import { AccessToken, VideoGrant } from "livekit-server-sdk"
+import { NextRequest, NextResponse } from "next/server"
 
 const apiKey = process.env.LIVEKIT_API_KEY
 const apiSecret = process.env.LIVEKIT_API_SECRET
