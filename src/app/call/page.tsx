@@ -20,13 +20,6 @@ export default function Call() {
       await room.disconnect()
     }
 
-    const promptResponse = await fetch("/api/questionnaire-prompt-builder")
-    if (!promptResponse.ok) {
-      const errorData = await promptResponse.json()
-      throw new Error(errorData.error || "Failed to fetch prompt")
-    }
-    const { prompt } = await promptResponse.json()
-
     const response = await fetch("/api/auth")
     if (!response.ok) {
       const errorData = await response.json()
@@ -38,16 +31,6 @@ export default function Call() {
       connectionDetailsData.participantToken
     )
     await room.localParticipant.setMicrophoneEnabled(true)
-
-    await room.localParticipant.publishData(
-      new TextEncoder().encode(
-        JSON.stringify({
-          type: "interview_prompt",
-          prompt,
-          skipGreeting: true,
-        })
-      )
-    )
   }, [room])
 
   useEffect(() => {
@@ -104,10 +87,10 @@ function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
           <div className="w-full overflow-hidden">
             <TranscriptionView />
           </div>
-          <div className="w-full">
+          <div className="w-full flex flex-row justify-between items-center">
             <ControlBar />
+            <RoomAudioRenderer />
           </div>
-          <RoomAudioRenderer />
           <NoAgentNotification state={agentState} />
         </div>
       )}
