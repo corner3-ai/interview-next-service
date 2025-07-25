@@ -1,89 +1,105 @@
-# interview-next-service
+# Hunters's Strella Interview
 
-> **Take-home assignment**  
-> Build a small Next.js (App Router) application that lets an interviewer compose a set of questions and then run a LiveKit audio call where an **AI agent** conducts the interview using those questions.
+This repo contains the code for the Strella interview challange. I focused on making the experience simple, clean, and easy to use. I kept things straightforward, and opted for these prebuilt solutions provided by LiveKit, rather than getting more manual with it like their React example shows.
 
----
+## Prerequisites
 
-## 1 · Why this project?
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
+- LiveKit account and credentials
+- The interview-strella-agent
 
-We want to see how you:
+## Installation
 
-* reason about product requirements and developer experience  
-* structure a small but complete TypeScript/Next.js code-base  
-* integrate an LiveKit API ([LiveKit](https://livekit.io/))  
-* write clean, testable, well-documented code  
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd interview-next-service
+```
 
----
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
 
-## 2 · What you need to build
+3. Set up environment variables:
+```bash
+cp env.example .env
+```
 
-| Route | Purpose | Notes |
-|-------|---------|-------|
-| **`/questionnaire-prompt-builder`** | UI that lets the interviewer enter or edit a *single* prompt (free-text) | *Persist* on **Save** – you may choose an in-memory store, the file-system, or a database (e.g. SQLite/PostgreSQL). |
-| **`GET /api/questionnaire-prompt-builder`** | Returns `{ prompt: string }` | Consumed by the AI agent (see below). |
-| **`/call`** | Creates a LiveKit room and perform the interview | The agent fetches the prompt via the endpoint above and performs the interview. |
+4. Fill in your LiveKit credentials in `.env`:
+```
+LIVEKIT_URL=your_livekit_server_url
+LIVEKIT_API_KEY=your_livekit_api_key
+LIVEKIT_API_SECRET=your_livekit_api_secret
+```
 
-### LiveKit 
-Those LiveKit resources might be helpful:
-- LiveKit [docs](https://docs.livekit.io/home/) 
-- LiveKit Next.js [quickstart](https://docs.livekit.io/home/quickstarts/nextjs/)
+## Running the Application
 
-
-### LiveKit AI Agent 
-
-We include a minimal livekit agent: [interview-strella-agent](http://github.com/corner3-ai/interview-strella-agent)
-
-* connects to the same LiveKit server as the browser client
-* requests the prompt from `/api/questionnaire-prompt-builder`
-
-
----
-
-## 4 · Getting started locally
-
-Run the development server:
-
+Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Note that the provided agent expects `interview-next-service` to run on port `3000`
+## Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Edit Interview Questions**: Click "Edit Prompt" to compose your interview questions
+2. **Start Interview**: Click "Start Interview" to create a LiveKit room and begin the interview
+3. **AI Agent**: The interview-strella-agent will automatically connect and conduct the interview using your custom questions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API Endpoints
 
+- `GET /api/questionnaire-prompt-builder` - Returns the current interview prompt
+- `POST /api/questionnaire-prompt-builder` - Updates the interview prompt
+- `GET /api/connection-details` - Generates LiveKit connection details for the interview room
 
-## 5 · How to submit your work
+## Running Tests
 
-1. **Fork** this repository on GitHub.  
-2. In the fork, create a branch named `submission/<your-github-username>` off `main`.  
-3. **Keep the fork private** and grant *read* access to:  
-   * `@lhylton`  
-   * `@mr-robek`  
-4. Develop on that branch. When you’re satisfied, open a **pull request** in *your own fork* from `submission/<your-github-username>` → `main`.  
-   * In the PR description include:  
-     * a checklist of finished requirements  
-     * total time spent  
-     * any known trade-offs / TODOs  
-5. Tag the reviewers above so we get notified.    
-6. **Do not** open PRs against the public upstream repo; we review only in your private fork.
+```bash
+npm test
+# or
+npm run test:watch
+```
 
-⏱ **Suggested time budget**: 3–6 hours. Quality over scope!
+## Project Structure
 
----
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── connection-details/     # LiveKit room creation
+│   │   └── questionnaire-prompt-builder/  # Prompt management
+│   ├── call/                       # Interview room interface
+│   ├── questionnaire-prompt-builder/      # Prompt editor UI
+│   └── page.tsx                    # Main landing page
+├── components/
+│   ├── livekit/                    # LiveKit UI components
+│   └── ui/                         # Reusable UI components
+├── hooks/                          # Custom React hooks
+└── lib/                           # Utility functions
+```
 
-## 6 · Need help? Ask early!
+## Technologies Used
 
-Please do not hesitate to reach out if you have any questions!
+- **Next.js 15** with App Router
+- **TypeScript** for type safety
+- **LiveKit** for real-time audio communication
+- **Tailwind CSS** for styling
+- **Radix UI** for accessible components
+- **Jest** for testing
 
-Good luck & have fun! 🚀
+## Acknowledgements
+
+1. https://github.com/livekit-examples/agent-starter-react
+2. https://github.com/corner3-ai/interview-next-service
+3. https://github.com/corner3-ai/interview-strella-agent
